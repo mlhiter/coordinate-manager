@@ -17,17 +17,19 @@
           class="in"
           show-password
         ></el-input>
-        <span class="tip"
-          >没有账号？<el-link
+        <span class="tip">
+          没有账号？
+          <el-link
             type="primary"
             :underline="false"
             @click="$router.push('register')"
-            >立即注册</el-link
-          ></span
-        >
-        <el-button type="primary" class="but" @click="confirmlogin"
-          >登录</el-button
-        >
+          >
+            立即注册
+          </el-link>
+        </span>
+        <el-button type="primary" class="but" @click="confirmlogin">
+          登录
+        </el-button>
       </div>
     </div>
   </div>
@@ -36,30 +38,30 @@
 <script>
 // @ is an alias to /src
 export default {
-  name: "LoginView",
+  name: 'AuthView',
   components: {},
   data() {
     return {
-      input1: "",
-      input2: "",
-    };
+      input1: '',
+      input2: '',
+    }
   },
   methods: {
     //检查注册信息是否合法
     confirmlogin() {
-      if (this.input1.length == 0) this.$message.error("请输入用户名");
-      else if (this.input2.length == 0) this.$message.error("请输入密码");
+      if (this.input1.length == 0) this.$message.error('请输入用户名')
+      else if (this.input2.length == 0) this.$message.error('请输入密码')
       else {
-        this.postlogininfo();
+        this.postlogininfo()
       }
     },
     //请求登录
     postlogininfo() {
       this.$axios({
-        url: "/login/normal/login",
-        method: "post",
+        url: '/login/normal/login',
+        method: 'post',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         data: {
           username: this.input1,
@@ -67,33 +69,33 @@ export default {
         },
         transformRequest: [
           function (dat) {
-            let ret = "";
+            let ret = ''
             for (let it in dat) {
-              ret +=encodeURIComponent(it) +
-                "=" +encodeURIComponent(dat[it]) +"&";
+              ret +=
+                encodeURIComponent(it) + '=' + encodeURIComponent(dat[it]) + '&'
             }
-            ret = ret.substring(0, ret.lastIndexOf("&"));
-            return ret;
+            ret = ret.substring(0, ret.lastIndexOf('&'))
+            return ret
           },
         ],
       })
         .then((res) => {
-          console.log(res);
-          if (res.data.msg == "成功") {
-            this.$message.success("登录成功");
+          console.log(res)
+          if (res.data.msg == '成功') {
+            this.$message.success('登录成功')
             //更新token
-            this.$store.commit('updateToken', res.data.data);
-						this.$store.commit('Token');
+            this.$store.commit('updateToken', res.data.data)
+            this.$store.commit('Token')
             //跳转页面
-            this.$router.push("/manage/place");
-          } else this.$message.error("登录失败");
+            this.$router.push('/manage/place')
+          } else this.$message.error('登录失败')
         })
         .catch((error) => {
-          this.$message.error(error);
-        });
+          this.$message.error(error)
+        })
     },
   },
-};
+}
 </script>
 
 <style lang="scss">
@@ -109,7 +111,7 @@ export default {
   top: 0px;
   width: 100%;
   height: 100%;
-  background-image: url("../assets/bg.svg");
+  background-image: url('../assets/bg.svg');
   background-repeat: no-repeat;
   background-size: cover;
   z-index: 2;

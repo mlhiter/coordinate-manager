@@ -20,12 +20,12 @@
 
 <script>
 export default {
-  name: "AboutView",
+  name: 'AboutView',
   data() {
-    return {};
+    return {}
   },
   methods: {},
-};
+}
 </script>
 
 <style>

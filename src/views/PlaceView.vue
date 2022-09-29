@@ -11,7 +11,7 @@
               <i class="el-icon-location"></i>
               <span>重要地点</span>
             </template>
-            <ClassName
+            <PlaceAdd
               :fc="this.form.class"
               @UPDtype="UPDtype"
               @lookup="lookup"
@@ -54,9 +54,10 @@
       <!-- 中间表格 -->
       <el-container direction="vertical">
         <div class="buttons">
-          <el-button @click="show" type="primary" plain
-            ><i class="el-icon-plus">&nbsp;新增</i></el-button
-          >&nbsp;&nbsp;&nbsp;
+          <el-button @click="show" type="primary" plain>
+            <i class="el-icon-plus">&nbsp;新增</i>
+          </el-button>
+          &nbsp;&nbsp;&nbsp;
           <el-dialog
             title="添加坐标"
             :visible.sync="dialogAddVisible"
@@ -76,8 +77,7 @@
                     :key="item.areaId"
                     :label="item.areaId"
                     :value="item.areaId"
-                  >
-                  </el-option>
+                  ></el-option>
                 </el-select>
               </el-form-item>
               <div id="mapcontainer2"></div>
@@ -142,9 +142,9 @@
               <el-button @click="dialogDelVisible = false">取 消</el-button>
             </div>
           </el-dialog>
-          <el-button type="success" plain @click="lookup(addareaId)"
-            ><i class="el-icon-refresh-left">&nbsp;刷新</i></el-button
-          >
+          <el-button type="success" plain @click="lookup(addareaId)">
+            <i class="el-icon-refresh-left">&nbsp;刷新</i>
+          </el-button>
         </div>
         <MainTable
           :tableData="this.tableData"
@@ -159,51 +159,40 @@
         <div id="mapcontainer3"></div>
       </el-container>
     </el-container>
-    <!-- 页脚的页码部分 -->
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-size="pageSize"
-      layout="total, prev, pager, next, jumper"
-      :total="tableData.length"
-      class="pagess"
-    >
-    </el-pagination>
   </div>
 </template>
 
 <script>
-import ClassName from "../components/ClassName.vue";
-import MainTable from "../components/MainTable.vue";
-import AMapLoader from "@amap/amap-jsapi-loader";
+import PlaceAdd from '../components/PlaceAdd.vue'
+import MainTable from '../components/MainTable.vue'
+import AMapLoader from '@amap/amap-jsapi-loader'
 // @ is an alias to /src
 export default {
-  name: "PlacePart",
+  name: 'PlaceView',
   components: {
-    ClassName,
+    PlaceAdd,
     MainTable,
   },
   mounted() {
     //启动时先更新地点列表
-    this.UPDtype();
+    this.UPDtype()
     AMapLoader.load({
-      key: "1953d1d7aa2b0b62ca8087efc9bfd9d8", //此处填入我们注册账号后获取的Key
-      version: "2.0", //指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-      plugins: [""], //需要使用的的插件列表，如比例尺'AMap.Scale'等
+      key: '1953d1d7aa2b0b62ca8087efc9bfd9d8', //此处填入我们注册账号后获取的Key
+      version: '2.0', //指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+      plugins: [''], //需要使用的的插件列表，如比例尺'AMap.Scale'等
     })
       .then((AMap) => {
-        this.AMap3 = AMap;
-        this.map3 = new AMap.Map("mapcontainer3", {
+        this.AMap3 = AMap
+        this.map3 = new AMap.Map('mapcontainer3', {
           //设置地图容器id
-          viewMode: "2D", //是否为3D地图模式
+          viewMode: '2D', //是否为3D地图模式
           zoom: 15, //初始化地图级别
           center: [122.082, 37.533], //初始化地图中心点位置
-        });
+        })
       })
       .catch((e) => {
-        console.log(e);
-      });
+        console.log(e)
+      })
   },
   data() {
     return {
@@ -212,7 +201,7 @@ export default {
       //目前的页码
       currentPage: 1,
       //“新建地点”对话框中的“地点名称”
-      word: "",
+      word: '',
       //要显示的坐标列表
       tableData: [],
       //是否显示“添加地点”对话框
@@ -247,131 +236,131 @@ export default {
       circle: null,
       map3: null,
       AMap3: null,
-    };
+    }
   },
   methods: {
     //更新地点列表
     UPDtype() {
-      console.log("type is being updated。");
+      console.log('type is being updated。')
       this.$axios({
-        url: "/area/get/only/area",
-        method: "get",
+        url: '/area/get/only/area',
+        method: 'get',
       })
         .then((res) => {
-          console.log(res);
-          this.form.class = res.data.data;
-          console.log(this.form.class);
+          console.log(res)
+          this.form.class = res.data.data
+          console.log(this.form.class)
         })
         .catch((error) => {
-          this.$message.error(error);
-        });
+          this.$message.error(error)
+        })
     },
     //修改每页显示数量时执行的函数
     handleSizeChange(e) {
-      this.pageSize = e;
+      this.pageSize = e
     },
     //修改当前页时执行的函数
     handleCurrentChange(e) {
-      this.currentPage = e;
+      this.currentPage = e
     },
     //点击位于“添加地点”中的地图组件时执行的函数
     ClickMap(e) {
-      this.pointlongitude = e.lnglat.getLng();
-      this.pointlatitude = e.lnglat.getLat();
+      this.pointlongitude = e.lnglat.getLng()
+      this.pointlatitude = e.lnglat.getLat()
     },
     //点击位于“添加坐标”中的地图组件时执行的函数
     ClickMap2(e) {
-      this.circleEditor.close();
-      this.circle.setCenter(e.lnglat);
-      this.pointlongitude2 = e.lnglat.getLng();
-      this.pointlatitude2 = e.lnglat.getLat();
-      clearTimeout(this.timer);
+      this.circleEditor.close()
+      this.circle.setCenter(e.lnglat)
+      this.pointlongitude2 = e.lnglat.getLng()
+      this.pointlatitude2 = e.lnglat.getLat()
+      clearTimeout(this.timer)
       this.timer = setTimeout(() => {
-        this.circleEditor.open();
-      }, 100);
+        this.circleEditor.open()
+      }, 100)
     },
     //“添加地点”对话框打开时执行的函数
     open() {
-      this.dialogFormVisible = true;
-      console.log("调用地图初始化");
-      (this.pointlongitude = 122.082),
+      this.dialogFormVisible = true
+      console.log('调用地图初始化')
+      ;(this.pointlongitude = 122.082),
         (this.pointlatitude = 37.533),
         AMapLoader.load({
-          key: "1953d1d7aa2b0b62ca8087efc9bfd9d8", //此处填入我们注册账号后获取的Key
-          version: "2.0", //指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-          plugins: ["AMap.CircleEditor"], //需要使用的的插件列表，如比例尺'AMap.Scale'等
+          key: '1953d1d7aa2b0b62ca8087efc9bfd9d8', //此处填入我们注册账号后获取的Key
+          version: '2.0', //指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+          plugins: ['AMap.CircleEditor'], //需要使用的的插件列表，如比例尺'AMap.Scale'等
         })
           .then((AMap) => {
-            this.AMap = AMap;
-            this.map = new AMap.Map("mapcontainer", {
+            this.AMap = AMap
+            this.map = new AMap.Map('mapcontainer', {
               //设置地图容器id
-              viewMode: "2D", //是否为3D地图模式
+              viewMode: '2D', //是否为3D地图模式
               zoom: 16, //初始化地图级别
               center: [122.082, 37.533], //初始化地图中心点位置
-            });
-            this.map.on("click", this.ClickMap);
+            })
+            this.map.on('click', this.ClickMap)
           })
           .catch((e) => {
-            console.log(e);
-          });
+            console.log(e)
+          })
     },
     //“添加地点”对话框关闭时执行的函数
     close() {
-      this.dialogFormVisible = false;
-      this.word = "";
+      this.dialogFormVisible = false
+      this.word = ''
     },
     //“添加坐标”对话框打开时执行的函数
     show() {
-      var that = this;
-      this.dialogAddVisible = true;
-      console.log("调用地图初始化2");
-      (this.pointlongitude2 = 122.082),
+      var that = this
+      this.dialogAddVisible = true
+      console.log('调用地图初始化2')
+      ;(this.pointlongitude2 = 122.082),
         (this.pointlatitude2 = 37.533),
         AMapLoader.load({
-          key: "1953d1d7aa2b0b62ca8087efc9bfd9d8", //此处填入我们注册账号后获取的Key
-          version: "2.0", //指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-          plugins: ["AMap.CircleEditor"], //需要使用的的插件列表，如比例尺'AMap.Scale'等
+          key: '1953d1d7aa2b0b62ca8087efc9bfd9d8', //此处填入我们注册账号后获取的Key
+          version: '2.0', //指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+          plugins: ['AMap.CircleEditor'], //需要使用的的插件列表，如比例尺'AMap.Scale'等
         })
           .then((AMap) => {
-            this.AMap = AMap;
-            this.map = new AMap.Map("mapcontainer2", {
+            this.AMap = AMap
+            this.map = new AMap.Map('mapcontainer2', {
               //设置地图容器id
-              viewMode: "2D", //是否为3D地图模式
+              viewMode: '2D', //是否为3D地图模式
               zoom: 16, //初始化地图级别
               center: [122.082, 37.533], //初始化地图中心点位置
-            });
-            this.map.on("click", this.ClickMap2);
-            that.updcircle();
+            })
+            this.map.on('click', this.ClickMap2)
+            that.updcircle()
             if (this.addareaId != null) {
               this.$axios({
-                url: "/area/get/coor/by/area/id",
-                method: "post",
+                url: '/area/get/coor/by/area/id',
+                method: 'post',
                 headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                  authToken: localStorage.getItem("token"),
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                  'authToken': localStorage.getItem('token'),
                 },
                 data: {
                   areaId: this.addareaId,
                 },
                 transformRequest: [
                   function (dat) {
-                    let ret = "";
+                    let ret = ''
                     for (let it in dat) {
                       ret +=
                         encodeURIComponent(it) +
-                        "=" +
+                        '=' +
                         encodeURIComponent(dat[it]) +
-                        "&";
+                        '&'
                     }
-                    ret = ret.substring(0, ret.lastIndexOf("&"));
-                    return ret;
+                    ret = ret.substring(0, ret.lastIndexOf('&'))
+                    return ret
                   },
                 ],
               })
                 .then((res) => {
-                  console.log(res);
-                  if (res.data.code == "10000") {
-                    this.tableData = res.data.data;
+                  console.log(res)
+                  if (res.data.code == '10000') {
+                    this.tableData = res.data.data
                     for (var i = 0; i < res.data.data.length; i++) {
                       var tempcircle = new this.AMap.Circle({
                         center: new this.AMap.LngLat(
@@ -379,45 +368,45 @@ export default {
                           res.data.data[i].latitude
                         ), // 圆心位置
                         radius: res.data.data[i].radius * 6300000, //半径
-                        strokeColor: "#22b14c", //线颜色
+                        strokeColor: '#22b14c', //线颜色
                         strokeOpacity: 1, //线透明度
                         strokeWeight: 3, //线粗细度
-                        fillColor: "#B5E61D", //填充颜色
+                        fillColor: '#B5E61D', //填充颜色
                         fillOpacity: 0.35, //填充透明度
-                      });
-                      this.map.add(tempcircle);
+                      })
+                      this.map.add(tempcircle)
                     }
-                  } else this.$message.error(res.data.errorMsg);
+                  } else this.$message.error(res.data.errorMsg)
                 })
                 .catch((error) => {
-                  this.$message.error(error);
-                });
+                  this.$message.error(error)
+                })
             }
           })
           .catch((e) => {
-            console.log(e);
-          });
+            console.log(e)
+          })
     },
     //确认添加坐标时执行的函数
     createitem() {
       if (this.addareaId == null) {
-        this.$message.error("必填项不完整");
-        return;
+        this.$message.error('必填项不完整')
+        return
       }
-      var that = this;
-      this.dialogAddVisible = false;
+      var that = this
+      this.dialogAddVisible = false
       let coord = {
         id: null,
         longitude: that.pointlongitude2,
         latitude: that.pointlatitude2,
         radius: that.radius2,
-      };
+      }
       this.$axios({
-        url: "/area/set/coor",
-        method: "post",
+        url: '/area/set/coor',
+        method: 'post',
         headers: {
-          "Content-Type": "application/json",
-          authToken: localStorage.getItem("token"),
+          'Content-Type': 'application/json',
+          'authToken': localStorage.getItem('token'),
         },
         data: {
           areaId: that.addareaId,
@@ -426,30 +415,30 @@ export default {
       })
         .then((res) => {
           if (res.data.code == 10000) {
-            this.$message.success("成功创建坐标");
+            this.$message.success('成功创建坐标')
             setTimeout(() => {
-              this.lookup(this.addareaId);
-            }, 200);
-          } else this.$message.error("无法创建坐标");
+              this.lookup(this.addareaId)
+            }, 200)
+          } else this.$message.error('无法创建坐标')
         })
         .catch((error) => {
-          this.$message.error(error);
-        });
+          this.$message.error(error)
+        })
     },
     //确认添加地点时执行的函数
     createcat() {
       if (this.word.length == 0) {
-        this.$message.error("必填项不完整");
-        return;
+        this.$message.error('必填项不完整')
+        return
       }
-      var that = this;
-      this.dialogFormVisible = false;
+      var that = this
+      this.dialogFormVisible = false
       this.$axios({
-        url: "/area/set/one",
-        method: "post",
+        url: '/area/set/one',
+        method: 'post',
         headers: {
-          "Content-Type": "application/json",
-          authToken: localStorage.getItem("token"),
+          'Content-Type': 'application/json',
+          'authToken': localStorage.getItem('token'),
         },
         data: {
           name: that.word,
@@ -460,123 +449,117 @@ export default {
       })
         .then((res) => {
           if (res.data.code == 10000) {
-            this.$message.success("成功创建地点");
-            this.word = "";
-          } else this.$message.error("无法创建地点");
+            this.$message.success('成功创建地点')
+            this.word = ''
+          } else this.$message.error('无法创建地点')
         })
         .catch((error) => {
-          this.$message.error(error);
-        });
+          this.$message.error(error)
+        })
       setTimeout(() => {
-        this.UPDtype();
-      }, 100);
+        this.UPDtype()
+      }, 100)
     },
     //按下修改按钮时执行的函数
     modify() {
-      this.$message.warning("功能暂未开放");
+      this.$message.warning('功能暂未开放')
       //this.dialogModVisible = true;
     },
     //按下坐标右侧修改按钮时执行的函数
     modifySingle(idx) {
-      console.log(idx);
-      this.$message.warning("功能暂未开放");
+      console.log(idx)
+      this.$message.warning('功能暂未开放')
       //this.dialogModVisible = true;
     },
     //确认修改执行
     modiConfirm() {
-      this.dialogModVisible = false;
+      this.dialogModVisible = false
     },
     //取消修改执行
     modiCancel() {
-      this.moditemp = {};
-      this.dialogModVisible = false;
+      this.moditemp = {}
+      this.dialogModVisible = false
     },
     //按下删除按钮执行
     eraseit() {
-      this.$message.warning("功能暂未开放，请使用坐标右侧的删除按钮");
+      this.$message.warning('功能暂未开放，请使用坐标右侧的删除按钮')
       //this.dialogDelVisible = true;
     },
     //按下坐标右侧删除按钮执行
     eraseSingle(idx) {
-      console.log("正在删除", idx);
+      console.log('正在删除', idx)
       this.$axios({
-        url: "/area/set/delete/coo",
-        method: "post",
+        url: '/area/set/delete/coo',
+        method: 'post',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          authToken: localStorage.getItem("token"),
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'authToken': localStorage.getItem('token'),
         },
         data: {
           cooid: idx,
         },
         transformRequest: [
           function (dat) {
-            let ret = "";
+            let ret = ''
             for (let it in dat) {
               ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(dat[it]) +
-                "&";
+                encodeURIComponent(it) + '=' + encodeURIComponent(dat[it]) + '&'
             }
-            ret = ret.substring(0, ret.lastIndexOf("&"));
-            return ret;
+            ret = ret.substring(0, ret.lastIndexOf('&'))
+            return ret
           },
         ],
       })
         .then((res) => {
           if (res.data.code == 10000) {
-            this.$message.success("删除成功");
+            this.$message.success('删除成功')
             setTimeout(() => {
-              this.lookup(this.addareaId);
-            }, 200);
-          } else this.$message.error("删除失败");
+              this.lookup(this.addareaId)
+            }, 200)
+          } else this.$message.error('删除失败')
         })
         .catch((error) => {
-          this.$message.error(error);
-        });
+          this.$message.error(error)
+        })
     },
     //确认删除执行
     eraseConfirm() {
-      console.log(this.multipleSelection);
-      this.dialogDelVisible = false;
+      console.log(this.multipleSelection)
+      this.dialogDelVisible = false
     },
     lookup(key) {
       if (key == null) {
-        this.$message.warning("请选择一个地点再更新");
-        return;
+        this.$message.warning('请选择一个地点再更新')
+        return
       }
-      this.addareaId = key;
+      this.addareaId = key
       this.$axios({
-        url: "/area/get/coor/by/area/id",
-        method: "post",
+        url: '/area/get/coor/by/area/id',
+        method: 'post',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          authToken: localStorage.getItem("token"),
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'authToken': localStorage.getItem('token'),
         },
         data: {
           areaId: key,
         },
         transformRequest: [
           function (dat) {
-            let ret = "";
+            let ret = ''
             for (let it in dat) {
               ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(dat[it]) +
-                "&";
+                encodeURIComponent(it) + '=' + encodeURIComponent(dat[it]) + '&'
             }
-            ret = ret.substring(0, ret.lastIndexOf("&"));
-            return ret;
+            ret = ret.substring(0, ret.lastIndexOf('&'))
+            return ret
           },
         ],
       })
         .then((res) => {
-          console.log(res);
-          if (res.data.code == "10000") {
-            this.tableData = res.data.data;
-            this.map3.clearMap();
+          console.log(res)
+          if (res.data.code == '10000') {
+            this.tableData = res.data.data
+            this.map3.clearMap()
             for (var i = 0; i < res.data.data.length; i++) {
               var tempcircle = new this.AMap3.Circle({
                 center: new this.AMap3.LngLat(
@@ -584,97 +567,95 @@ export default {
                   res.data.data[i].latitude
                 ), // 圆心位置
                 radius: res.data.data[i].radius * 6300000, //半径
-                strokeColor: "#2d9bfc", //线颜色
+                strokeColor: '#2d9bfc', //线颜色
                 strokeOpacity: 1, //线透明度
                 strokeWeight: 3, //线粗细度
-                fillColor: "#87c5f8", //填充颜色
+                fillColor: '#87c5f8', //填充颜色
                 fillOpacity: 0.35, //填充透明度
-              });
-              this.map3.add(tempcircle);
+              })
+              this.map3.add(tempcircle)
             }
-          } else this.$message.error(res.data.errorMsg);
+          } else this.$message.error(res.data.errorMsg)
         })
         .catch((error) => {
-          this.$message.error(error);
-        });
+          this.$message.error(error)
+        })
     },
     //相应子组件MainTable提示的函数
     Trans(value) {
-      this.multipleSelection = value;
+      this.multipleSelection = value
     },
     //“添加地点”中的地图更新标点
     updmark() {
-      this.map.clearMap();
+      this.map.clearMap()
       var ico = new this.AMap.Icon({
         size: new this.AMap.Size(32, 40), // 图标尺寸
-        image: "https://a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png", // Icon的图像
+        image:
+          'https://a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png', // Icon的图像
         imageSize: new this.AMap.Size(32, 40), // 根据所设置的大小拉伸或压缩图片
-      });
+      })
 
       var marker = new this.AMap.Marker({
         icon: ico,
         position: [this.pointlongitude, this.pointlatitude],
-        anchor: "bottom-center",
-      });
-      this.map.add(marker);
+        anchor: 'bottom-center',
+      })
+      this.map.add(marker)
     },
     //“添加坐标”中的地图更新标点
     updcircle() {
-      this.map.clearMap();
+      this.map.clearMap()
       this.circle = new this.AMap.Circle({
         center: new this.AMap.LngLat(this.pointlongitude2, this.pointlatitude2), // 圆心位置
         radius: this.radius2, //半径
-        strokeColor: "#2d9bfc", //线颜色
+        strokeColor: '#2d9bfc', //线颜色
         strokeOpacity: 1, //线透明度
         strokeWeight: 3, //线粗细度
-        fillColor: "#87c5f8", //填充颜色
+        fillColor: '#87c5f8', //填充颜色
         fillOpacity: 0.35, //填充透明度
-      });
-      this.map.add(this.circle);
-      this.map.setFitView([this.circle]);
-      this.circleEditor = new this.AMap.CircleEditor(this.map, this.circle);
-      this.circleEditor.open();
-      this.circleEditor.on("move", this.circleposchange);
-      this.circleEditor.on("adjust", this.circleradiuschange);
+      })
+      this.map.add(this.circle)
+      this.map.setFitView([this.circle])
+      this.circleEditor = new this.AMap.CircleEditor(this.map, this.circle)
+      this.circleEditor.open()
+      this.circleEditor.on('move', this.circleposchange)
+      this.circleEditor.on('adjust', this.circleradiuschange)
     },
     circleposchange(event) {
-      this.pointlongitude2 = event.lnglat.KL;
-      this.pointlatitude2 = event.lnglat.kT;
+      this.pointlongitude2 = event.lnglat.KL
+      this.pointlatitude2 = event.lnglat.kT
     },
     circleradiuschange(event) {
-      this.radius2 = event.radius;
+      this.radius2 = event.radius
     },
     updsmallmap() {
       this.$axios({
-        url: "/area/get/coor/by/area/id",
-        method: "post",
+        url: '/area/get/coor/by/area/id',
+        method: 'post',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          authToken: localStorage.getItem("token"),
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'authToken': localStorage.getItem('token'),
         },
         data: {
           areaId: this.addareaId,
         },
         transformRequest: [
           function (dat) {
-            let ret = "";
+            let ret = ''
             for (let it in dat) {
               ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(dat[it]) +
-                "&";
+                encodeURIComponent(it) + '=' + encodeURIComponent(dat[it]) + '&'
             }
-            ret = ret.substring(0, ret.lastIndexOf("&"));
-            return ret;
+            ret = ret.substring(0, ret.lastIndexOf('&'))
+            return ret
           },
         ],
       })
         .then((res) => {
-          console.log(res);
-          this.updcircle();
-          if (res.data.code == "10000") {
-            this.tableData = res.data.data;
+          console.log(res)
+          this.updcircle()
+          if (res.data.code == '10000') {
+            this.tableData = res.data.data
             for (var i = 0; i < res.data.data.length; i++) {
               var tempcircle = new this.AMap.Circle({
                 center: new this.AMap.LngLat(
@@ -682,42 +663,42 @@ export default {
                   res.data.data[i].latitude
                 ), // 圆心位置
                 radius: res.data.data[i].radius * 6300000, //半径
-                strokeColor: "#22b14c", //线颜色
+                strokeColor: '#22b14c', //线颜色
                 strokeOpacity: 1, //线透明度
                 strokeWeight: 3, //线粗细度
-                fillColor: "#B5E61D", //填充颜色
+                fillColor: '#B5E61D', //填充颜色
                 fillOpacity: 0.35, //填充透明度
-              });
-              this.map.add(tempcircle);
+              })
+              this.map.add(tempcircle)
             }
-          } else this.$message.error(res.data.errorMsg);
+          } else this.$message.error(res.data.errorMsg)
         })
         .catch((error) => {
-          this.$message.error(error);
-        });
+          this.$message.error(error)
+        })
     },
     deltable() {
-      this.tableData = [];
+      this.tableData = []
     },
   },
   watch: {
     //监控变量值的变化，便于做出及时响应
     pointlongitude(now, pre) {
-      console.log("longitude变化。", pre, "->", now);
-      this.updmark();
+      console.log('longitude变化。', pre, '->', now)
+      this.updmark()
     },
     pointlatitude(now, pre) {
-      console.log("latitude变化。", pre, "->", now);
-      this.updmark();
+      console.log('latitude变化。', pre, '->', now)
+      this.updmark()
     },
     addareaId(now, pre) {
-      console.log("addareaId变化", pre, "->", now);
-      if (now == null) return;
-      else if (this.AMap == null) return;
-      else this.updsmallmap();
+      console.log('addareaId变化', pre, '->', now)
+      if (now == null) return
+      else if (this.AMap == null) return
+      else this.updsmallmap()
     },
   },
-};
+}
 </script>
 
 <style>
@@ -791,9 +772,5 @@ export default {
   left: 240px;
   cursor: pointer;
   z-index: 9989;
-}
-.pagess {
-  position: absolute;
-  right: 600px;
 }
 </style>

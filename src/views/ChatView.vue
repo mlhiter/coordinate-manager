@@ -37,94 +37,91 @@
       </el-dialog>
       <!-- 聊天模块 -->
       <el-container style="float: left">
-        <private-message ref="messages"></private-message>
+        <PrivateChat ref="messages"></PrivateChat>
       </el-container>
     </el-container>
   </div>
 </template>
 
 <script>
-import PrivateMessage from "../components/PrivateMessage.vue";
+import PrivateChat from '../components/PrivateChat.vue'
 export default {
-  name: "MessagePart",
-  components: { PrivateMessage },
+  name: 'ChatView',
+  components: { PrivateChat },
   data() {
     return {
       //群发相关数据
       dialogVisible: false,
-      message: "",
-      newData: "",
-    };
+      message: '',
+      newData: '',
+    }
   },
   mounted: function () {
-    this.isNew();
+    this.isNew()
     setInterval(() => {
-      this.isNew();
-    }, 15000);
+      this.isNew()
+    }, 15000)
   },
   methods: {
     //提交群发消息的函数
     submit() {
       this.$axios({
-        url: "/message/send/many",
-        method: "POST",
+        url: '/message/send/many',
+        method: 'POST',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          authToken: localStorage.getItem("token"),
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'authToken': localStorage.getItem('token'),
         },
         data: {
           message: this.message,
         },
         transformRequest: [
           function (dat) {
-            let ret = "";
+            let ret = ''
             for (let it in dat) {
               ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(dat[it]) +
-                "&";
+                encodeURIComponent(it) + '=' + encodeURIComponent(dat[it]) + '&'
             }
-            ret = ret.substring(0, ret.lastIndexOf("&"));
-            return ret;
+            ret = ret.substring(0, ret.lastIndexOf('&'))
+            return ret
           },
         ],
       }).then(() => {
         setTimeout(() => {
-          this.$refs.messages.UPDmessagelist();
-        }, 300);
-        this.dialogVisible = false;
-        this.message = "";
-      });
+          this.$refs.messages.UPDmessagelist()
+        }, 300)
+        this.dialogVisible = false
+        this.message = ''
+      })
     },
     //判断是否有新消息
     isNew() {
-      console.log("检查新消息");
+      console.log('检查新消息')
       this.$axios({
-        url: "/message/judge/if/new/all",
-        method: "post",
+        url: '/message/judge/if/new/all',
+        method: 'post',
         headers: {
-          authToken: localStorage.getItem("token"),
+          authToken: localStorage.getItem('token'),
         },
       })
         .then((resp) => {
-          console.log(resp);
-          if (resp.data.data == "有新消息") {
-            this.newData = "new";
+          console.log(resp)
+          if (resp.data.data == '有新消息') {
+            this.newData = 'new'
           } else {
-            this.newData = "";
+            this.newData = ''
           }
         })
         .catch((error) => {
-          console.error(error);
-        });
+          console.error(error)
+        })
     },
     //点击消息列表删掉new字符的函数
     restoreNew() {
-      this.newData = "";
+      this.newData = ''
     },
   },
-};
+}
 </script>
 
 <style>

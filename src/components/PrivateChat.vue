@@ -44,8 +44,7 @@
           autosize
           type="textarea"
           v-on:keyup.enter="confirmsend"
-        >
-        </el-input>
+        ></el-input>
         <el-button
           class="sendmessage"
           type="primary"
@@ -68,7 +67,7 @@
 </template>
 <script>
 export default {
-  name: "PrivateMessage",
+  name: 'PrivateMessage',
   data() {
     return {
       userlist: [],
@@ -76,24 +75,24 @@ export default {
       currentPage: 1,
       pageSize: 10,
       totalPage: 0,
-      content: "",
+      content: '',
       selectid: -1,
-    };
+    }
   },
   mounted() {
-    this.UPDuserlist();
+    this.UPDuserlist()
     setInterval(() => {
-      this.UPDmessagelist();
-    }, 1000);
+      this.UPDmessagelist()
+    }, 1000)
   },
   methods: {
     UPDuserlist() {
       this.$axios({
-        url: "/user/get/all/user",
-        method: "get",
+        url: '/user/get/all/user',
+        method: 'get',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          authToken: localStorage.getItem("token"),
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'authToken': localStorage.getItem('token'),
         },
         params: {
           num: this.currentPage,
@@ -101,79 +100,73 @@ export default {
         },
         transformRequest: [
           function (dat) {
-            let ret = "";
+            let ret = ''
             for (let it in dat) {
               ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(dat[it]) +
-                "&";
+                encodeURIComponent(it) + '=' + encodeURIComponent(dat[it]) + '&'
             }
-            ret = ret.substring(0, ret.lastIndexOf("&"));
-            return ret;
+            ret = ret.substring(0, ret.lastIndexOf('&'))
+            return ret
           },
         ],
       })
         .then((res) => {
-          console.log("服务器获取用户列表", res);
-          this.userlist = res.data.data;
-          this.totalPage = parseInt(res.data.msg);
+          console.log('服务器获取用户列表', res)
+          this.userlist = res.data.data
+          this.totalPage = parseInt(res.data.msg)
         })
         .catch((error) => {
-          console.error(error);
-        });
+          console.error(error)
+        })
     },
     handleCurrentChange(event) {
-      this.currentPage = event;
-      this.UPDuserlist();
+      this.currentPage = event
+      this.UPDuserlist()
     },
     handleSelect(event) {
-      this.selectid = event;
-      this.UPDmessagelist();
+      this.selectid = event
+      this.UPDmessagelist()
     },
     UPDmessagelist() {
-      if (this.selectid < 0) return;
+      if (this.selectid < 0) return
       this.$axios({
-        url: "/message/get",
-        method: "post",
+        url: '/message/get',
+        method: 'post',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          authToken: localStorage.getItem("token"),
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'authToken': localStorage.getItem('token'),
         },
         params: {
           oid: this.selectid,
         },
         transformRequest: [
           function (dat) {
-            let ret = "";
+            let ret = ''
             for (let it in dat) {
               ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(dat[it]) +
-                "&";
+                encodeURIComponent(it) + '=' + encodeURIComponent(dat[it]) + '&'
             }
-            ret = ret.substring(0, ret.lastIndexOf("&"));
-            return ret;
+            ret = ret.substring(0, ret.lastIndexOf('&'))
+            return ret
           },
         ],
       })
         .then((res) => {
-          console.log("服务器获取消息列表", res);
-          this.messagelist = res.data.data;
-          this.messagelist.reverse();
+          console.log('服务器获取消息列表', res)
+          this.messagelist = res.data.data
+          this.messagelist.reverse()
         })
         .catch((error) => {
-          console.error(error);
-        });
+          console.error(error)
+        })
     },
     confirmsend() {
       this.$axios({
-        url: "/message/send",
-        method: "post",
+        url: '/message/send',
+        method: 'post',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          authToken: localStorage.getItem("token"),
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'authToken': localStorage.getItem('token'),
         },
         params: {
           rid: this.selectid,
@@ -181,33 +174,30 @@ export default {
         },
         transformRequest: [
           function (dat) {
-            let ret = "";
+            let ret = ''
             for (let it in dat) {
               ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(dat[it]) +
-                "&";
+                encodeURIComponent(it) + '=' + encodeURIComponent(dat[it]) + '&'
             }
-            ret = ret.substring(0, ret.lastIndexOf("&"));
-            return ret;
+            ret = ret.substring(0, ret.lastIndexOf('&'))
+            return ret
           },
         ],
       })
         .then(() => {
-          this.content = "";
+          this.content = ''
           setTimeout(() => {
-            var pt = this.$el.querySelector("#messagecontain");
-            pt.scrollTop = pt.scrollHeight;
-            this.UPDmessagelist();
-          }, 300);
+            var pt = this.$el.querySelector('#messagecontain')
+            pt.scrollTop = pt.scrollHeight
+            this.UPDmessagelist()
+          }, 300)
         })
         .catch((error) => {
-          console.error(error);
-        });
+          console.error(error)
+        })
     },
   },
-};
+}
 </script>
 <style scoped>
 .aside {
@@ -239,14 +229,14 @@ export default {
   display: block;
   clear: both;
   margin-bottom: 20px;
-  font-family: Tahoma, "仿宋";
+  font-family: Tahoma, '仿宋';
 }
 .messagesend {
   float: right;
   display: block;
   clear: both;
   margin-bottom: 20px;
-  font-family: Tahoma, "仿宋";
+  font-family: Tahoma, '仿宋';
 }
 .receivebubble {
   background-color: #eee;

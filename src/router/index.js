@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import LoginView from '../views/LoginView.vue'
+import AuthView from '../views/AuthView.vue'
 import MainView from '../layouts/MainView.vue'
 import RegisterView from '../views/RegisterView.vue'
-import PlacePart from '../views/PlacePart.vue'
-import UserPart from '../views/UserPart.vue'
-import MessagePart from '../views/MessagePart.vue'
+import PlaceView from '../views/PlaceView.vue'
+import StateView from '../views/StateView.vue'
+import ChatView from '../views/ChatView.vue'
 import AboutView from '../views/AboutView.vue'
 
 Vue.use(VueRouter)
@@ -13,8 +13,8 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'login',
-    component: LoginView,
+    name: 'auth',
+    component: AuthView,
     meta:{
       title:"登录界面"
     }
@@ -26,21 +26,21 @@ const routes = [
     children:[
       {
         path:'place',
-        component: PlacePart,
+        component: PlaceView,
         meta:{
           title:"管理界面"
         },
       },
       {
-        path:'user',
-        component:UserPart,
+        path:'state',
+        component:StateView,
         meta:{
           title:"管理界面"
         },
       },
       {
-        path:'message',
-        component:MessagePart,
+        path:'chat',
+        component:ChatView,
         meta:{
             title:"管理界面"
         },

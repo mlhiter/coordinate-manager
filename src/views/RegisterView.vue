@@ -34,42 +34,42 @@
 <script>
 // @ is an alias to /src
 export default {
-  name: "RegisterView",
+  name: 'RegisterView',
   components: {},
   data() {
     return {
-      input3: "",
-      input4: "",
-      input5: "",
-    };
+      input3: '',
+      input4: '',
+      input5: '',
+    }
   },
   methods: {
     //检查注册信息是否合法，并返回
     checkreg() {
-      if (this.input3.length == 0) this.$message.error("用户名不能为空");
-      else if (this.input4.length == 0) this.$message.error("请输入密码");
-      else if (this.input5.length == 0) this.$message.error("请确认密码");
-      else if (this.input4 != this.input5) this.$message.error("密码不一致");
+      if (this.input3.length == 0) this.$message.error('用户名不能为空')
+      else if (this.input4.length == 0) this.$message.error('请输入密码')
+      else if (this.input5.length == 0) this.$message.error('请确认密码')
+      else if (this.input4 != this.input5) this.$message.error('密码不一致')
       else {
         //向服务器请求注册
-        this.postreg();
-        this.input3 = "";
-        this.input4 = "";
-        this.input5 = "";
+        this.postreg()
+        this.input3 = ''
+        this.input4 = ''
+        this.input5 = ''
         this.$message({
-          message: "注册成功",
-          type: "success",
-        });
-        this.$router.push("/");
+          message: '注册成功',
+          type: 'success',
+        })
+        this.$router.push('/')
       }
     },
     //注册信息传给服务器
     postreg() {
       this.$axios({
-        url: "/login/normal/register",
-        method: "post",
+        url: '/login/normal/register',
+        method: 'post',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         data: {
           username: this.input3,
@@ -77,29 +77,29 @@ export default {
         },
         transformRequest: [
           function (dat) {
-            let ret = "";
+            let ret = ''
             for (let it in dat) {
-              ret +=encodeURIComponent(it) +
-                "=" +encodeURIComponent(dat[it]) +"&";
+              ret +=
+                encodeURIComponent(it) + '=' + encodeURIComponent(dat[it]) + '&'
             }
-            ret = ret.substring(0, ret.lastIndexOf("&"));
-            return ret;
+            ret = ret.substring(0, ret.lastIndexOf('&'))
+            return ret
           },
         ],
       })
         .then((res) => {
-          console.log(res);
+          console.log(res)
         })
         .catch((error) => {
-          this.$message.error(error);
-        });
+          this.$message.error(error)
+        })
     },
     //按下返回键时触发
     back() {
-      this.$router.push("/");
+      this.$router.push('/')
     },
   },
-};
+}
 </script>
 
 <style lang="scss">

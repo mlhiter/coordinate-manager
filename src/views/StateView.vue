@@ -2,12 +2,21 @@
   <div>
     <!-- 数据表 -->
     <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="userId" label="用户id" width="600">
-      </el-table-column>
-      <el-table-column prop="userWxName" label="用户名" width="600">
-      </el-table-column>
-      <el-table-column prop="userState" label="核酸状态" width="">
-      </el-table-column>
+      <el-table-column
+        prop="userId"
+        label="用户id"
+        width="600"
+      ></el-table-column>
+      <el-table-column
+        prop="userWxName"
+        label="用户名"
+        width="600"
+      ></el-table-column>
+      <el-table-column
+        prop="userState"
+        label="核酸状态"
+        width=""
+      ></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <div class="input">
@@ -15,8 +24,9 @@
               @click="handleEdit(scope.$index, scope.row)"
               type="primary"
               native-type="submit"
-              >修改</el-button
             >
+              修改
+            </el-button>
           </div>
         </template>
       </el-table-column>
@@ -57,7 +67,7 @@
 
 <script>
 export default {
-  name: "UserPart",
+  name: 'StateView',
   data() {
     return {
       pageSize: 10, //每页多少条
@@ -73,21 +83,21 @@ export default {
       dialogVisible: false,
       //总数量
       totalnum: 0,
-    };
+    }
   },
   mounted: function () {
-    this.upUserData();
+    this.upUserData()
   },
   methods: {
     //刷新用户数据的函数
     upUserData() {
-      console.log("正在刷新数据......");
-      console.log(localStorage.getItem("token"));
+      // console.log('正在刷新数据......')
+      // console.log(localStorage.getItem('token'))
       this.$axios({
-        url: "/user/get/all/user",
-        method: "get",
+        url: '/user/get/all/user',
+        method: 'get',
         headers: {
-          authToken: localStorage.getItem("token"),
+          authToken: localStorage.getItem('token'),
         },
         params: {
           num: this.currentPage,
@@ -95,39 +105,39 @@ export default {
         },
       })
         .then((resp) => {
-          console.log(resp.data);
-          this.tableData = resp.data.data;
-          this.totalnum = parseInt(resp.data.msg);
+          // console.log(resp.data)
+          this.tableData = resp.data.data
+          this.totalnum = parseInt(resp.data.msg)
         })
         .catch((error) => {
-          console.error(error);
-        });
+          console.error(error)
+        })
     },
     // 每页多少条
     handleSizeChange(val) {
-      this.pageSize = val;
-      this.upUserData();
+      this.pageSize = val
+      this.upUserData()
     },
     // 当前页
     handleCurrentChange(val) {
-      this.currentPage = val;
-      this.upUserData();
+      this.currentPage = val
+      this.upUserData()
     },
     //操作核酸状态
     handleEdit(index, row) {
-      console.log(index, row);
-      this.changeid = row.userId;
-      this.changeState = row.userState;
-      this.dialogVisible = true;
+      console.log(index, row)
+      this.changeid = row.userId
+      this.changeState = row.userState
+      this.dialogVisible = true
     },
     dangerconfirm() {
       //发送请求更新后端数据库
       this.$axios({
-        url: "/judge/setacidstate",
-        method: "POST",
+        url: '/judge/setacidstate',
+        method: 'POST',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          authToken: localStorage.getItem("token"),
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'authToken': localStorage.getItem('token'),
         },
         data: {
           state: this.changeState,
@@ -135,34 +145,32 @@ export default {
         },
         transformRequest: [
           function (dat) {
-            let ret = "";
+            let ret = ''
             for (let it in dat) {
               ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(dat[it]) +
-                "&";
+                encodeURIComponent(it) + '=' + encodeURIComponent(dat[it]) + '&'
             }
-            ret = ret.substring(0, ret.lastIndexOf("&"));
-            return ret;
+            ret = ret.substring(0, ret.lastIndexOf('&'))
+            return ret
           },
         ],
       })
         .then((res) => {
-          console.log(res);
-          this.$message.success("修改成功");
-          setTimeout(() => {
-            this.upUserData();
-          }, 500);
-          this.dialogVisible = false;
+          console.log(res)
+          this.$message.success('修改成功')
+          this.upUserData()
+          // setTimeout(() => {
+          //   this.upUserData()
+          // }, 500)
+          this.dialogVisible = false
         })
         .catch((error) => {
-          this.$message.error(error);
-          this.dialogVisible = false;
-        });
+          this.$message.error(error)
+          this.dialogVisible = false
+        })
     },
   },
-};
+}
 </script>
 
 <style>
