@@ -1,67 +1,69 @@
 <template>
   <div>
     <!-- 数据表 -->
-    <el-table :data="tableData" style="width: 100%">
-      <el-table-column
-        prop="userId"
-        label="用户id"
-        width="600"
-      ></el-table-column>
-      <el-table-column
-        prop="userWxName"
-        label="用户名"
-        width="600"
-      ></el-table-column>
-      <el-table-column
-        prop="userState"
-        label="核酸状态"
-        width=""
-      ></el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <div class="input">
-            <el-button
-              @click="handleEdit(scope.$index, scope.row)"
-              type="primary"
-              native-type="submit"
-            >
-              修改
-            </el-button>
-          </div>
-        </template>
-      </el-table-column>
-      <!-- 空数据处理方式 -->
-      <div slot="empty" style="text-align: left">
-        <el-empty>
-          <el-button type="primary" @click="upUserData">刷新数据</el-button>
-        </el-empty>
-      </div>
-    </el-table>
-    <el-dialog title="修改核酸状态" :visible.sync="dialogVisible">
-      <h2>正在修改id为【{{ changeid }}】的用户危险等级</h2>
-      <el-select v-model="changeState" placeholder="危险等级">
-        <el-option label="0(安全)" :value="0"></el-option>
-        <el-option label="1" :value="1"></el-option>
-        <el-option label="2" :value="2"></el-option>
-        <el-option label="3(确诊)" :value="3"></el-option>
-      </el-select>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dangerconfirm">确 定</el-button>
-      </span>
-    </el-dialog>
-    <!-- 底部页码部分 -->
-    <el-pagination
-      class="pagination"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="[5, 10, 15, 20]"
-      :page-size="pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="totalnum"
-      style="float: right; margin-top: 15px"
-    ></el-pagination>
+    <el-container direction="vertical" class="table_container">
+      <el-table :data="tableData">
+        <el-table-column
+          prop="userId"
+          label="用户id"
+          width="500px"
+        ></el-table-column>
+        <el-table-column
+          prop="userWxName"
+          label="用户名"
+          width="600px"
+        ></el-table-column>
+        <el-table-column
+          prop="userState"
+          label="核酸状态"
+          width=""
+        ></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <div class="input">
+              <el-button
+                @click="handleEdit(scope.$index, scope.row)"
+                type="primary"
+                native-type="submit"
+              >
+                修改
+              </el-button>
+            </div>
+          </template>
+        </el-table-column>
+        <!-- 空数据处理方式 -->
+        <div slot="empty" style="text-align: left">
+          <el-empty>
+            <el-button type="primary" @click="upUserData">刷新数据</el-button>
+          </el-empty>
+        </div>
+      </el-table>
+      <el-dialog title="修改核酸状态" :visible.sync="dialogVisible">
+        <h2>正在修改id为【{{ changeid }}】的用户危险等级</h2>
+        <el-select v-model="changeState" placeholder="危险等级">
+          <el-option label="0(安全)" :value="0"></el-option>
+          <el-option label="1" :value="1"></el-option>
+          <el-option label="2" :value="2"></el-option>
+          <el-option label="3(确诊)" :value="3"></el-option>
+        </el-select>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dangerconfirm">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!-- 底部页码部分 -->
+      <el-pagination
+        class="pagination"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalnum"
+        style="float: right; margin-top: 15px"
+      ></el-pagination>
+    </el-container>
   </div>
 </template>
 
@@ -174,6 +176,11 @@ export default {
 </script>
 
 <style>
+.table_container {
+  width: 100%;
+  margin-top: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+}
 .input {
   display: flex;
   flex-direction: row;

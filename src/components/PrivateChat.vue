@@ -1,5 +1,6 @@
 <template>
   <el-container>
+    <!-- 用户列表区域 -->
     <el-aside class="aside">
       <el-menu @select="handleSelect">
         <el-menu-item
@@ -11,6 +12,14 @@
           {{ item.userWxName }}
         </el-menu-item>
       </el-menu>
+      <el-pagination
+        class="pagination_userlist"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next"
+        :total="totalPage"
+      ></el-pagination>
     </el-aside>
     <el-container>
       <el-main id="messagecontain">
@@ -55,14 +64,6 @@
         </el-button>
       </el-footer>
     </el-container>
-    <el-pagination
-      class="pagination_userlist"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-size="pageSize"
-      layout="total, prev, pager, next"
-      :total="totalPage"
-    ></el-pagination>
   </el-container>
 </template>
 <script>
@@ -206,6 +207,7 @@ export default {
 .avatarclass {
   float: left;
   margin-top: 8px;
+  background-color: rgb(123, 175, 214);
 }
 .pagination_userlist {
   position: absolute;
@@ -215,7 +217,7 @@ export default {
 .message {
   display: inline-block;
   margin-right: 20px;
-  width: 900px;
+  width: 500px;
 }
 .sendmessage {
   display: inline-block;

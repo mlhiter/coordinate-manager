@@ -58,12 +58,14 @@
             <i class="el-icon-plus">&nbsp;新增</i>
           </el-button>
           &nbsp;&nbsp;&nbsp;
+          <!-- 添加坐标弹出框 -->
           <el-dialog
             title="添加坐标"
             :visible.sync="dialogAddVisible"
             width="1000px"
             :destroy-on-close="true"
             :close-on-click-modal="false"
+            center
           >
             <el-form :inline="true">
               <el-form-item label="地点ID" label-width="70px" prop="category">
